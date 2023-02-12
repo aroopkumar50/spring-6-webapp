@@ -16,7 +16,8 @@ public class BootstrapData implements CommandLineRunner {
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
 
-    public BootstrapData(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
+    public BootstrapData(AuthorRepository authorRepository, BookRepository bookRepository,
+                         PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
         this.publisherRepository = publisherRepository;
@@ -36,21 +37,20 @@ public class BootstrapData implements CommandLineRunner {
         Book hpSaved = bookRepository.save(hp);
 
         Author rr = new Author();
-        jk.setFirstName("Rick");
-        jk.setLastName("Riordan");
+        rr.setFirstName("Rick");
+        rr.setLastName("Riordan");
 
         Book pj = new Book();
-        hp.setTitle("Percy Jackson");
-        hp.setIsbn("12342");
+        pj.setTitle("Percy Jackson");
+        pj.setIsbn("12342");
 
         Author rrSaved = authorRepository.save(rr);
         Book pjSaved = bookRepository.save(pj);
 
-        jkSaved.getBooks().add(hp);
-        rrSaved.getBooks().add(pj);
-
-        authorRepository.save(jkSaved);
-        authorRepository.save(rrSaved);
+        jkSaved.getBooks().add(hpSaved);
+        rrSaved.getBooks().add(pjSaved);
+        hpSaved.getAuthors().add(jkSaved);
+        pjSaved.getAuthors().add(rrSaved);
 
         Publisher penguin = new Publisher();
         penguin.setPublisherName("Penguin");
@@ -59,11 +59,13 @@ public class BootstrapData implements CommandLineRunner {
         penguin.setState("UP");
         penguin.setZip("226002");
 
-        publisherRepository.save(penguin);
+        Publisher penguinSaved = publisherRepository.save(penguin);
 
-        hpSaved.setPublisher(penguin);
-        pjSaved.setPublisher(penguin);
+        hpSaved.setPublisher(penguinSaved);
+        pjSaved.setPublisher(penguinSaved);
 
+        authorRepository.save(jkSaved);
+        authorRepository.save(rrSaved);
         bookRepository.save(hpSaved);
         bookRepository.save(pjSaved);
 
